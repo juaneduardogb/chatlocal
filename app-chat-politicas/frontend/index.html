@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="icon" type="image/svg+xml" href="/chatia/assets/logo.ico" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Chat IA | CL</title>
+        <script src="/register-service-worker.js"></script>
+    </head>
+    <body data-prefers-color-scheme="light">
+        <div id="root"></div>
+        <!-- Contenedor para modales que necesitan estar fuera del flujo normal del DOM -->
+        <div id="modal-root" style="position: relative; z-index: 2147483647"></div>
+        <script type="module" src="/src/main.tsx"></script>
+    </body>
+</html>
+

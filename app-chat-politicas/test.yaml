@@ -1,0 +1,76 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: datalocalchile-dev-ingress-nginx
+  namespace: datalocalchile-dev
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "100m"
+spec:
+  ingressClassName: datalocalchile-dev
+  tls:
+  - hosts:
+    - operationhub-dev.pwcinternal.com
+    secretName: datalocalchile-dev-tls-secret
+  rules:
+  - host: operationhub-dev.pwcinternal.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: cl-ioo-front-servicios-compartidos-service
+            port:
+              number: 80
+      - path: /chatia(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: cl-ioo-front-ia2-service2
+            port:
+              number: 80
+      - path: /api/syncacl/v1(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: cl-ioo-back-sync-acl-service
+            port:
+              number: 80
+      - path: /api/workers/v1(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: cl-ioo-back-workers-service
+            port:
+              number: 80
+      - path: /portal-reclutamiento/front(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: cl-ioo-front-reclutamiento-service
+            port:
+              number: 80
+      - path: /portal-reclutamiento/back(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: cl-ioo-back-reclutamiento-service
+            port:
+              number: 80
+      - path: /portal-facturas-ltda/back(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: cl-ioo-back-portal-facturas-service
+            port:
+              number: 80
+      - path: /api/chat-ia(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: cl-ioo-backia-service
+            port:
+              number: 80

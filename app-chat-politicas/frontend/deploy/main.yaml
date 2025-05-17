@@ -1,0 +1,75 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: 'cl-ioo-front-ia2-service2'
+    annotations:
+        service.beta.kubernetes.io/azure-load-balancer-internal: 'true'
+spec:
+    type: LoadBalancer
+    ports:
+        #- name: https
+        #  protocol: TCP
+        #  port: 443
+        #  targetPort: 443
+        #- name: http
+        #  protocol: TCP
+        #  port: 5000
+        #  targetPort: 5000
+        - port: 80
+          targetPort: 8080
+    selector:
+        app: 'cl-ioo-front-ia2'
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: 'cl-ioo-front-ia2-deployment2'
+    labels:
+        app: 'cl-ioo-front-ia2'
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            service: 'cl-ioo-front-ia2'
+    template:
+        metadata:
+            labels:
+                app: 'cl-ioo-front-ia2'
+                service: 'cl-ioo-front-ia2'
+        spec:
+            containers:
+                - name: 'cl-ioo-front-ia2'
+                  image: image-to-replace
+                  imagePullPolicy: Always
+                  securityContext:
+                      privileged: false
+                      readOnlyRootFilesystem: true
+                      runAsNonRoot: true
+                      runAsUser: 10000
+                      allowPrivilegeEscalation: false
+                      seccompProfile:
+                          type: RuntimeDefault
+                  ports:
+                      - containerPort: 8080
+                        protocol: TCP
+
+                  volumeMounts:
+                      - name: tmp-volume
+                        mountPath: /var/cache/nginx
+                      - name: html-volume
+                        mountPath: /etc/nginx/html
+                      - name: nginx-run
+                        mountPath: /var/run
+            volumes:
+                - name: tmp-volume
+                  emptyDir: {}
+                - name: html-volume
+                  emptyDir: {}
+                - name: nginx-run
+                  emptyDir: {}
+            imagePullSecrets:
+                - name: datalocal-jfrog-container-dev001
+---
+
+

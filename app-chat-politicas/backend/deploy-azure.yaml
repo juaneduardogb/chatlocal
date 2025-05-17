@@ -1,0 +1,88 @@
+trigger:
+- none
+
+variables:
+- group: NGC-swhgp
+- name: WORKING_DIRECTORY
+  value: "$(System.DefaultWorkingDirectory)"
+- name: ENV
+  value: '$(Build.SourceBranchName)'
+- name: NEW_DEPLOY_FILE
+  value: 'nginx-deployment-modified.yaml'
+- name: IMAGE_NAME
+  value: 'backendchatia-jfrog'
+
+- ${{ if eq(variables['Build.SourceBranchName'], 'front-2') }}:
+  - group: NGC-swhgp-dev001
+- name: secureFile
+  value: '.env.chatia'
+
+pool: '$(AGENT_POOL)'
+
+jobs:
+- job: MyJob
+  pool:
+    vmImage: 'ubuntu-latest'
+
+  steps:
+  - checkout: self
+
+  - task: DownloadSecureFile@1
+    inputs:
+      secureFile: $(secureFile)
+
+  - powershell: |
+      $filePath = "$(Agent.TempDirectory)/$(secureFile)"
+      # $fileContent = Get-Content -Path $filePath -Raw
+      # Write-Host "##vso[task.setvariable variable=MY_SECURE_VAR]$fileContent" 
+      # dir $(Pipeline.Workspace)/s/
+      Copy-Item $filePath -Destination $(Pipeline.Workspace)/s/backend/.env
+      dir -Force $(Pipeline.Workspace)/s/backend/
+    displayName: 'Leer contenido del archivo seguro'
+
+  - script: docker images
+  - task: Docker@2
+    displayName: Build Docker Image
+    inputs:
+      command: build
+      dockerfile: '**/Dockerfile'
+      buildContext: $(System.DefaultWorkingDirectory)
+      arguments: "--tag $(JFROG-DOCKER).artifacts-west.pwc.com/$(IMAGE_NAME):$(Build.BuildId)"
+      addPipelineData: false
+
+  - task: ArtifactoryDocker@1
+    displayName: Publish Docker Image to JFrog Artifactory
+    inputs:
+      command: 'push'
+      artifactoryService: '$(CONTAINER_REGISTRY)'
+      targetRepo: '$(JFROG-DOCKER)'
+      imageName: '$(JFROG-DOCKER).artifacts-west.pwc.com/$(IMAGE_NAME):$(Build.BuildId)'
+      collectBuildInfo: true
+      buildName: '$(Build.DefinitionName)'
+      buildNumber: '$(Build.BuildNumber)'
+      projectKey: '$(JFROG-DOCKER-KEY)'
+
+  - script: |
+      sed "s|image-to-replace|$(JFROG-DOCKER).artifacts-west.pwc.com/$(IMAGE_NAME):$(Build.BuildId)|g" "$(NGINX_DEPLOYMENT_FILE_BACK)" > "$(WORKING_DIRECTORY)/$(NEW_DEPLOY_FILE)"
+    displayName: 'Replace image tag in YAML file'
+    env:
+      buildId: $(Build.BuildId)
+      WORKING_DIRECTORY: $(WORKING_DIRECTORY)
+      nginxDeploymentFile: '$(NGINX_DEPLOYMENT_FILE_BACK)'
+      modifiedDeploymentFile: $(NEW_DEPLOY_FILE)
+
+  - task: PwC NextGen Cloud CaaS Deployment v4@1
+    inputs:
+      REQUESTED_FOR: '$(REQUESTED_FOR)'
+      APP_ENV_ID: '$(APP_ENV_ID)'
+      CLOUD_SERVICE_PROVIDER: 'Azure'
+      NAMESPACE: '$(NAMESPACE)'
+      DEPLOYMENTTYPE: 'yaml'
+      YAML_ATTACHMENT_FILENAME1: '$(NEW_DEPLOY_FILE)'
+      SNOW_API_BASE_URL: '$(SNOW_API_BASE_URL)'
+      API_KEY: '$(API_KEY)'
+      API_KEY_SECRET: '$(API_KEY_SECRET)'
+      PROXY_AUTH: '$(PROXY_AUTH)'
+      API_USERNAME: '$(API_USERNAME)'
+      API_PASSWORD: '$(API_PASSWORD)'
+    enabled: true

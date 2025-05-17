@@ -1,0 +1,107 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: 'cl-ioo-front-servicios-compartidos-service'
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+spec:
+  type: LoadBalancer
+  ports:
+  #- name: https
+  #  protocol: TCP
+  #  port: 443
+  #  targetPort: 80
+  - name: http
+    protocol: TCP
+    port: 80
+    targetPort: 8080
+    #nodePort: 30004
+  selector:
+    app: 'cl-ioo-front-servicios-compartidos'
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: 'cl-ioo-front-servicios-compartidos-deployment'
+  labels:
+    app: 'cl-ioo-front-servicios-compartidos'
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: 'cl-ioo-front-servicios-compartidos'
+  template:
+    metadata:
+      labels:
+        app: 'cl-ioo-front-servicios-compartidos'
+        service: 'cl-ioo-front-servicios-compartidos'
+    spec:
+      containers:
+      - name: 'cl-ioo-front-servicios-compartidos'
+        image: image-to-replace
+        imagePullPolicy: Always
+        securityContext:
+          privileged: false
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 10000
+          allowPrivilegeEscalation: false
+          seccompProfile:
+            type: RuntimeDefault
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        volumeMounts:
+        - name: tmp-volume
+          mountPath: /var/cache/nginx
+        - name: html-volume
+          mountPath: /etc/nginx/html
+      volumes:
+      - name: tmp-volume
+        emptyDir: {}
+      - name: html-volume
+        emptyDir: {}
+      imagePullSecrets:
+      - name: datalocal-jfrog-container-dev001
+---
+
+
+#Creando un LoadBalancer para OperationHub
+#En Kubernetes, el servicio de tipo LoadBalancer no apunta directamente a un recurso Ingress específico.
+#En su lugar, el LoadBalancer expone el Ingress Controller al exterior, y el Ingress Controller maneja
+#las reglas de redirección definidas en los recursos Ingress.
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: datalocalchile-dev-ingress-nginx
+  namespace: datalocalchile-dev
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+spec:
+  ingressClassName: datalocalchile-dev
+  tls:
+  - hosts:
+    - operationhub-dev.pwcinternal.com
+    secretName: datalocalchile-dev-tls-secret
+  rules:
+  - host: operationhub-dev.pwcinternal.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: cl-ioo-front-servicios-compartidos-service
+            port:
+              number: 80
+      - path: /chatia(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: cl-ioo-front-ia2-service2
+            port:
+              number: 80

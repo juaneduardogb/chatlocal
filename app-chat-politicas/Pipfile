@@ -1,0 +1,30 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+crewai = {extras = ["tools"], version = "==0.100.1"}
+beanie = "==1.26.0"
+async-lru = "==2.0.4"
+pydantic = "==2.9.1"
+aiohttp = "==3.10.5"
+pymupdf = "==1.24.12"
+fastapi = {extras = ["standard"], version = "==0.115.4"}
+slowapi = "==0.1.9"
+python-multipart = "==0.0.17"
+pip-system-certs = "==4.0"
+azure-storage-blob = "==12.23.1"
+python-dotenv = "==1.0.1"
+black = "==24.10.0"
+requests = "==2.32.3"
+pandas = "==2.2.3"
+sqlmodel = "==0.0.22"
+pyodbc = "==5.2.0"
+jinja2 = "==3.1.5"
+litellm = ">=1.55.0"
+
+[dev-packages]
+
+[requires]
+python_version = "3.11"

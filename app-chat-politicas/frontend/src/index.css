@@ -1,0 +1,384 @@
+@import 'package_entra_id/src/index.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --color-text-primary: #d93954;
+    --color-text-secondary: #ffffff;
+    --color-text-light: #696969;
+    --color-text-heading: #252525;
+    --color-text-body: #474747;
+    --color-text-disabled: #dddddd;
+    --color-background-success: #39d954;
+    --chat-selected-color-bg: #fceceb;
+
+    --color-text-link-primary: #d93954;
+    --color-text-link-secondary: #f5687f;
+    --color-text-link-primary-inverse: #Ds93954;
+    --bg-primary-color: #fceceb;
+    --bg-warning-color: #ffc83d;
+    --table-head-color: #e6e6e6;
+    --color-background: #f1f1f1;
+    --status-warning-color: #ffca64;
+    --menu-items-bg: #f9f9fa;
+
+    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+
+    color-scheme: light;
+    color: var(--color-text-primary);
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    background-color: var(--background) !important;
+}
+
+@layer base {
+    :root {
+        --foreground: 0 0% 3.9%;
+        --card: 0 0% 100%;
+        --card-foreground: 0 0% 3.9%;
+        --primary: 0 0% 9%;
+        --primary-foreground: 0 0% 98%;
+        --secondary: 0 0% 96.1%;
+        --secondary-foreground: 0 0% 9%;
+        --muted: 0 0% 96.1%;
+        --muted-foreground: 0 0% 45.1%;
+        --accent: 0 0% 96.1%;
+        --accent-foreground: 0 0% 9%;
+        --destructive: 0 84.2% 60.2%;
+        --destructive-foreground: 0 0% 98%;
+        --border: 0 0% 89.8%;
+        --input: 0 0% 89.8%;
+        --ring: 0 0% 3.9%;
+        --chart-1: 12 76% 61%;
+        --chart-2: 173 58% 39%;
+        --chart-3: 197 37% 24%;
+        --chart-4: 43 74% 66%;
+        --chart-5: 27 87% 67%;
+        --radius: 0.5rem;
+    }
+    .dark {
+        --foreground: 0 0% 98%;
+        --card: 0 0% 3.9%;
+        --card-foreground: 0 0% 98%;
+        --primary: 0 0% 98%;
+        --primary-foreground: 0 0% 9%;
+        --secondary: 0 0% 14.9%;
+        --secondary-foreground: 0 0% 98%;
+        --muted: 0 0% 14.9%;
+        --muted-foreground: 0 0% 63.9%;
+        --accent: 0 0% 14.9%;
+        --accent-foreground: 0 0% 98%;
+        --destructive: 0 62.8% 30.6%;
+        --destructive-foreground: 0 0% 98%;
+        --border: 0 0% 14.9%;
+        --input: 0 0% 14.9%;
+        --ring: 0 0% 83.1%;
+        --chart-1: 220 70% 50%;
+        --chart-2: 160 60% 45%;
+        --chart-3: 30 80% 55%;
+        --chart-4: 280 65% 60%;
+        --chart-5: 340 75% 55%;
+    }
+}
+
+@layer base {
+    * {
+        border: hsl(var(--border));
+    }
+}
+
+textarea {
+    resize: none;
+}
+
+textarea:focus {
+    outline: none;
+}
+
+.loading-balls {
+    display: flex;
+    height: 10px;
+    width: auto;
+}
+
+.loading-balls div {
+    width: 3px;
+    height: 3px;
+    margin: 3px;
+    background-color: #333;
+    border-radius: 50%;
+    animation: loading 0.6s infinite alternate;
+}
+
+.loading-balls div:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.loading-balls div:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes loading {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(-10px);
+    }
+}
+
+/* Estilos adicionales para modales */
+.heroui-modal-backdrop {
+    z-index: 50000 !important;
+}
+
+.heroui-modal-content {
+    z-index: 50001 !important;
+}
+
+.modal-container {
+    z-index: 50000;
+    position: fixed;
+    inset: 0;
+}
+
+/* Estilos para portales de React */
+#modal-root {
+    position: fixed !important;
+    z-index: 2147483647 !important;
+    pointer-events: none;
+}
+
+#modal-root > * {
+    pointer-events: auto;
+}
+
+/* Estilo para sobrescribir cualquier otro z-index */
+body > div[data-modal-portal='true'] {
+    position: relative;
+    z-index: 9999999 !important;
+}
+
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+
+/* Custom scrollbar for WebKit browsers */
+::-webkit-scrollbar {
+    width: 6px; /* Width of the entire scrollbar */
+}
+::-webkit-scrollbar-track {
+    background: transparent; /* Color of the track */
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #0000000c; /* Color of the scrollbar handle */
+    border-radius: 2px; /* Roundness of the scrollbar handle */
+    border: 2px solid transparent; /* Padding around the scrollbar handle */
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #555; /* Color when you hover over the scrollbar handle */
+}
+
+/* Prevenir desplazamientos bruscos durante la carga */
+html,
+body {
+    height: 100%;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+
+#root {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Mantener estable el layout durante la carga de contenido */
+section,
+main,
+div {
+    min-height: 0;
+}
+
+/* Estabilidad específica para sidebar */
+.sidebar-open {
+    min-height: 100vh;
+    position: relative;
+}
+
+/* Evitar que el contenido principal cause desplazamientos */
+#main-content {
+    isolation: isolate;
+}
+
+/* Estilos para toasts */
+[role='status'] {
+    position: relative !important;
+    z-index: 50000 !important;
+}
+
+[role='status'] button {
+    position: absolute !important;
+    right: 8px !important;
+    top: 8px !important;
+    opacity: 1 !important;
+    cursor: pointer !important;
+    color: white !important;
+    z-index: 50001 !important;
+    padding: 4px !important;
+    border-radius: 4px !important;
+    transition: background-color 0.2s ease !important;
+    width: 24px !important;
+    height: 24px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 18px !important;
+    line-height: 1 !important;
+}
+
+[role='status'] button:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Estilos específicos para Heroui toasts */
+.heroui-toast {
+    position: fixed !important;
+    z-index: 60000 !important;
+}
+
+.heroui-toast-close-button {
+    position: absolute !important;
+    right: 8px !important;
+    top: 8px !important;
+    opacity: 1 !important;
+    cursor: pointer !important;
+    color: white !important;
+    background: transparent !important;
+    border: none !important;
+    padding: 4px !important;
+    width: 24px !important;
+    height: 24px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 18px !important;
+    border-radius: 4px !important;
+}
+
+.heroui-toast-close-button:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.ant-message {
+    z-index: 50000 !important;
+}
+
+.ant-drawer,
+.ant-drawer-right {
+    z-index: 50000 !important;
+}
+
+.ant-drawer-header {
+    min-height: auto;
+}
+

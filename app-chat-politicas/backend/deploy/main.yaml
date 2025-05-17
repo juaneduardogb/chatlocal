@@ -1,0 +1,54 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: "cl-ioo-backia-service"
+    annotations:
+        service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+spec:
+    type: LoadBalancer
+    ports:
+        - port: 80
+          targetPort: 8080
+    selector:
+        app: "cl-ioo-backia"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: "cl-ioo-backia-deployment"
+    labels:
+        app: "cl-ioo-backia"
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            service: "cl-ioo-backia"
+    template:
+        metadata:
+            labels:
+                app: "cl-ioo-backia"
+                service: "cl-ioo-backia"
+        spec:
+            containers:
+                - name: "cl-ioo-backia"
+                  image: image-to-replace
+                  imagePullPolicy: Always
+                  securityContext:
+                      privileged: false
+                      readOnlyRootFilesystem: true
+                      runAsNonRoot: true
+                      runAsUser: 10000
+                      allowPrivilegeEscalation: false
+                      seccompProfile:
+                          type: RuntimeDefault
+                  ports:
+                      - containerPort: 8080
+                        protocol: TCP
+            volumes:
+                - name: app-volume
+                  emptyDir: {}
+            imagePullSecrets:
+                - name: datalocal-jfrog-container-dev001
+---
+
